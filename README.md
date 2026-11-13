@@ -1,9 +1,12 @@
 # Wiener Accelerator - Backend Flow Examples
 
-This repository contains only selected code examples reproduced in **TSMC65Flow_1_7_25.pdf**,
+![Wiener accelerator chip layout](assets/chip_layout.png)
+
+The code examples in this repository are reproduced in **TSMC65Flow_1_7_25.pdf**,
 with limited project adaptations and limitations. Page references below use the printed page numbers.
 
-Project RTL, testbenches, netlists, screenshots, results, private notes and source inventories are excluded.
+The chip overview above is included with explicit publication approval. Project RTL, testbenches, netlists,
+other screenshots, results, private notes and source inventories are excluded.
 The PDF and licensed technology libraries are not distributed here.
 
 ## Included examples
