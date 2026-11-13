@@ -1,0 +1,25 @@
+// Source: TSMC65Flow_1_7_25.pdf, printed pages 47-48.
+// Adaptation: two scan chains; PDF line wrapping repaired.
+set log file ../logfile/out.log -replace
+set compare effort low
+
+read library -Both -Replace -sensitive -Statetable -Liberty /tools/kits/TSMCPDK/TSMC65/TSMCHOME/digital/Front_End/timing_power_noise/NLDM/tcbn65lplvt_220a/tcbn65lplvttc.lib /tools/kits/TSMCPDK/TSMC65/TSMCHOME/digital/Front_End/timing_power_noise/NLDM/tpdn65lpnv2od3_200a/tpdn65lpnv2od3tc.lib
+
+read design ../datain/top.v -Verilog -Golden -continuousassignment Bidirectional -nokeep_unreach -norangeconstraint
+
+read design ../datain/top_post_layout_gvg.v -Verilog -Revised -sensitive -continuousassignment Bidirectional -nokeep_unreach -nosupply
+
+add pin constraints 0 scan_in1 -both
+add pin constraints 0 scan_in2 -both
+add pin constraints 0 scan_en -both
+add ignore outputs scan_out1 -both
+add ignore outputs scan_out2 -both
+
+set flatten model -gated_clock
+uniquify -all
+
+write hier_compare dofile hier.do -replace -prepend_string "analyze datapath -module -threads 4 ; analyze datapath -wordlevel -verbose" -usage
+
+set dofile abort OFF
+set compare effort low
+run hier_compare hier.do
