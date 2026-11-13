@@ -1,7 +1,7 @@
 # Wiener Accelerator - Backend Flow Examples
 
 This repository contains only selected code examples reproduced in **TSMC65Flow_1_7_25.pdf**,
-with limited project adaptations. Page references below use the printed page numbers.
+with limited project adaptations and limitations. Page references below use the printed page numbers.
 
 Project RTL, testbenches, netlists, screenshots, results, private notes and source inventories are excluded.
 The PDF and licensed technology libraries are not distributed here.
