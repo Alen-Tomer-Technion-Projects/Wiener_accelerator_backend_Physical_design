@@ -1,61 +1,67 @@
 # Wiener Image Filter Accelerator
 
-![Wiener accelerator chip layout](assets/chip_layout.png)
+![Our chip layout](assets/chip_layout.png)
 
-Physical implementation of a Wiener image filter accelerator using Cadence Innovus, Cadence Conformal and Synopsys PrimeTime, with layout preparation in Cadence Virtuoso.
+In this project, we worked on the physical design of a Wiener image filter accelerator. The filter is used to reduce noise in grayscale images.
 
-This repository contains selected implementation scripts and screenshots of the project results. The chip overview shows the routed core, its surrounding power network and the signal and supply pads around the perimeter.
+We used Innovus for the chip layout, Conformal for logic equivalence checks and PrimeTime for timing checks. We also started working with the layout in Virtuoso.
 
-## Logic equivalence
+This repository includes backend script examples and pictures from our work.
 
-The captured gate to gate comparison completed with an **Equivalent** result. Conformal processed one module pair with zero nonequivalent pairs and zero aborted pairs. The recorded CPU time was 530.98 seconds.
+## Our chip
 
-This result applies to the netlists and comparison setup used in the captured run.
+The picture above shows our chip after routing. The filter circuit is in the middle. The input, output and power pads are around the edges.
 
-![Completed logic equivalence comparison](assets/results/logic_equivalence.png)
+## Logic equivalence check
 
-## Clock distribution
+We used Conformal to compare the design before and after physical implementation. The result was **Equivalent**, with one module pair checked and no failed or aborted pairs.
 
-Clock tree synthesis produced the distribution network shown below. The captured clock DAG check lists no net violations.
+This means the logic matched for the files and settings used in this check.
 
-The displayed SlowDC setup view has insertion delays from **0.274 ns to 0.362 ns**. Its clock skew is **0.088 ns**, against a target of **0.300 ns**. Average insertion delay is **0.335 ns**.
+![Our logic equivalence result](assets/results/logic_equivalence.png)
 
-The cell distribution lists **196 clock buffers** and **12 instances classified as dcg**.
+## Clock tree
 
-![Clock tree topology](assets/results/clock_tree.png)
+The clock tree carries the clock signal to the flip flops in the design.
 
-## Timing progress
+In the result shown, the clock delay ranges from **0.274 ns to 0.362 ns**. The difference is called clock skew. Our skew was **0.088 ns**, below the **0.300 ns** target.
 
-The earlier timing snapshot shows setup WNS of **negative 0.010 ns**, TNS of **negative 0.018 ns** and **three violating paths** in SlowView. The corresponding FastView hold snapshot shows WNS of **positive 0.047 ns**, zero TNS and zero violating paths.
+The clock check showed no clock DAG net violations. The cell list includes **196 clock buffers** and **12 other cells marked as dcg**.
 
-After routing and setup optimization, the displayed final setup summary shows **positive 0.479 ns WNS**, zero TNS and **85.77% density**.
+![Our clock tree](assets/results/clock_tree.png)
 
-The separate hold optimization image records a completed run. Its visible timing fields are setup metrics, so they do not establish the final hold slack.
+## Timing
 
-![Setup optimization summary after routing](assets/results/postroute_setup_optimization.png)
+After clock tree synthesis, we had **three setup violations**. The worst setup slack was **negative 0.010 ns**. The hold check had no violations, with a worst slack of **positive 0.047 ns**.
 
-## Power estimate
+After routing and setup optimization, the setup slack improved to **positive 0.479 ns**, with zero total negative slack. The cell density shown was **85.77%**.
 
-The captured power summary lists **0.24418 mW total leakage power**, **267.496 pF total capacitance** and **26,559 instances**. It also lists two instances without power values and two without activity values.
+We also ran hold optimization. That screenshot shows setup timing numbers, so we cannot use it as the final hold result.
 
-These figures describe that captured estimate. The supplied images do not establish total dynamic power or supply voltage drop results.
+![Setup timing after routing and optimization](assets/results/postroute_setup_optimization.png)
 
-## Physical verification progress
+## Power
 
-The supplied DRC snapshot shows **four M2 parallel run length spacing violations** near the core power pads. The selected violation has **0.500 µm actual spacing** against **1.500 µm required spacing**.
+The leakage power estimate was **0.24418 mW**. The same output lists **267.496 pF** total capacitance and **26,559 instances**.
 
-This records an intermediate verification state. Final DRC and LVS closure remain to be documented.
+This is a leakage estimate. A total dynamic power result is not included in these pictures.
 
-The Virtuoso screenshot records an initial stream import form. It shows the technology library in the destination field before that selection was corrected. The design destination is **EDLib**, attached to **tsmcN65**.
+## Layout checks
 
-The [results gallery](docs/results.md) contains all supplied screenshots and explains what each one demonstrates.
+One of our earlier DRC checks found **four spacing violations** near the power pads on M2. The selected problem had **0.500 µm** spacing, while the rule required **1.500 µm**.
+
+The pictures here do not include the final DRC or LVS results.
+
+We also opened the layout in Virtuoso. The saved import picture was taken before we changed the destination library to **EDLib**.
+
+You can see all the pictures and short explanations in the [results gallery](docs/results.md).
 
 ## Scripts
 
-The [Conformal directory](lec_gvg/scripts) contains the gate to gate comparison setup for two scan chains and gated clock modeling.
+The [Conformal folder](lec_gvg/scripts) contains the comparison setup for our two scan chains and clock gating.
 
-The [Innovus directory](innovus/scripts) contains clock source declaration, routing optimization, RC extraction, filler insertion and netlist and GDS export examples. The clock source fragment declares the source pin only and does not run a complete clock tree synthesis flow.
+The [Innovus folder](innovus/scripts) has examples for the clock source, timing optimization, RC extraction, filler cells and exporting the design. The clock source script only sets the source pin. It does not build the full clock tree.
 
-The [PrimeTime setup directory](primetime/setup/scripts) and [PrimeTime hold directory](primetime/hold/scripts) contain the corresponding timing analysis examples.
+The [PrimeTime setup folder](primetime/setup/scripts) and [PrimeTime hold folder](primetime/hold/scripts) contain timing check examples.
 
-The tools require matching netlists, timing constraints, parasitics and licensed libraries supplied in the working environment. The included scripts are selected flow stages rather than a complete automated implementation.
+These scripts cover separate parts of the flow. To run them, you also need the matching design files, constraints, parasitics and licensed libraries.

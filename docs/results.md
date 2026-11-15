@@ -1,93 +1,95 @@
-# Implementation Results Gallery
+# Pictures and Results
 
-These screenshots document individual stages of the implementation. Each caption describes the visible evidence and its scope.
+These pictures show different steps of our work. Each explanation describes what we can see in that picture.
 
-## Chip overview
+## Our chip
 
-The routed core is surrounded by the signal pads, supply pads and power distribution network.
+This is our chip after routing. The circuit is in the middle, with the signal and power pads around it.
 
-![Wiener accelerator chip layout](../assets/chip_layout.png)
+![Our chip layout](../assets/chip_layout.png)
 
-## Completed logic equivalence check
+## Logic equivalence check
 
-Conformal shows one equivalent module pair, zero nonequivalent pairs and zero aborted pairs. The hierarchical comparison status is Equivalent and the completion indicator is 100%.
+Conformal finished with an Equivalent result. It checked one module pair, with no failed or aborted pairs. The progress bar reached 100%.
 
-CPU time is 530.98 seconds and recorded memory usage is 492.83 Mbytes. These are the values displayed for this run.
+The tool used 530.98 seconds of CPU time and 492.83 Mbytes of memory in this run.
 
-![Conformal equivalence result](../assets/results/logic_equivalence.png)
+![Our logic equivalence result](../assets/results/logic_equivalence.png)
 
-## Clock tree topology
+## Clock tree
 
-The tree view shows the clock distribution branches and their sinks. Its geometry is a topology visualization rather than the physical placement of the chip.
+This view shows how the clock branches out to the flip flops. The branches show the connections in the tree, rather than their actual locations on the chip.
 
-![Clock tree](../assets/results/clock_tree.png)
+![Our clock tree](../assets/results/clock_tree.png)
 
-## Setup timing after clock tree synthesis
+## Setup timing after CTS
 
-SlowView has WNS of negative 0.010 ns, TNS of negative 0.018 ns and three violating paths. All three belong to the register to register group.
+The SlowView check found three setup violations between registers. The worst slack was negative 0.010 ns. The total negative slack was negative 0.018 ns.
 
-![Setup timing snapshot](../assets/results/cts_setup_timing.png)
+![Setup timing after CTS](../assets/results/cts_setup_timing.png)
 
-## Hold timing after clock tree synthesis
+## Hold timing after CTS
 
-FastView has WNS of positive 0.047 ns, zero TNS and zero violating paths in the displayed summary.
+The FastView hold check had no violations. The worst slack was positive 0.047 ns and the total negative slack was zero.
 
-![Hold timing snapshot](../assets/results/cts_hold_timing.png)
+![Hold timing after CTS](../assets/results/cts_hold_timing.png)
 
-## Clock DAG checks
+## Clock net check
 
-The clock DAG net violation summary states None. This observation concerns the displayed clock checks rather than all physical design rules.
+The clock DAG check found no net violations. This is one clock check, so we still need the other timing and layout checks too.
 
-![Clock DAG check](../assets/results/cts_clock_checks.png)
+![Clock net check](../assets/results/cts_clock_checks.png)
 
-## Clock skew and insertion delay
+## Clock delay and skew
 
-For SlowDC:setup.late and clock group top, minimum insertion delay is 0.274 ns and maximum insertion delay is 0.362 ns. Skew is 0.088 ns with a target of 0.300 ns. Average insertion delay is 0.335 ns.
+In the shown SlowDC setup view, the smallest clock delay was 0.274 ns and the largest was 0.362 ns. The difference was 0.088 ns, which is below the 0.300 ns skew target. The average clock delay was 0.335 ns.
 
-![Clock skew summary](../assets/results/cts_skew.png)
+![Clock delay and skew](../assets/results/cts_skew.png)
 
-## Clock cell distribution
+## Cells in the clock tree
 
-The displayed buffer counts are five CKBD24LVT, three CKBD12LVT and 188 CKBD6LVT, giving 196 clock buffers.
+The list shows five CKBD24LVT buffers, three CKBD12LVT buffers and 188 CKBD6LVT buffers. Together, these make 196 clock buffers.
 
-The remaining rows list one AN2D8LVT, four AN2D4LVT, one AN2D2LVT, one CKAN2D2LVT, three CKAN2D1LVT and two CKAN2D0LVT. Those twelve instances are classified as dcg in the captured output.
+There are also twelve other cells marked as dcg. Their cell names and sizes are shown in the picture.
 
-![Clock cell distribution](../assets/results/cts_cell_distribution.png)
+![Cells in the clock tree](../assets/results/cts_cell_distribution.png)
 
 ## Setup optimization after routing
 
-The final displayed setup WNS is positive 0.479 ns and TNS is zero. Density is 85.77%. The message summary records 185 warnings and zero command errors.
+After this step, the setup slack was positive 0.479 ns and the total negative slack was zero. The density was 85.77%.
 
-Zero command errors does not establish a clean physical DRC result.
+The command finished with 185 warnings and zero errors. The DRC results are checked separately.
 
 ![Setup optimization after routing](../assets/results/postroute_setup_optimization.png)
 
-## Hold optimization run
+## Hold optimization
 
-This screenshot records a completed hold optimization run with 118 warnings and zero command errors. The visible metric labels say timing.setup, with WNS of positive 0.480 ns and TNS of zero. These values are therefore not presented as final hold slack.
+This picture is from the hold optimization run. The command finished with 118 warnings and zero errors.
 
-![Hold optimization after routing](../assets/results/postroute_hold_optimization.png)
+Although this run was for hold, the timing numbers shown are labelled as setup. They show positive 0.480 ns WNS and zero TNS. We do not use these numbers as the final hold result.
 
-## Leakage estimate
+![Hold optimization run](../assets/results/postroute_hold_optimization.png)
 
-The visible total leakage power is 0.24418 mW. Total capacitance is 2.67496 times ten to the power of negative ten farads, equivalent to 267.496 pF. The summary lists 26,559 instances, two instances without power values and two without activity values.
+## Leakage power
 
-The image does not provide a total dynamic power result.
+The leakage estimate was 0.24418 mW. The output also shows 267.496 pF total capacitance and 26,559 instances.
 
-![Leakage and power summary](../assets/results/leakage_power.png)
+Two instances have no power values and two have no activity values. The picture does not include a total dynamic power result.
 
-## Intermediate spacing violations
+![Leakage power estimate](../assets/results/leakage_power.png)
 
-The violation browser lists four M2 parallel run length spacing violations involving VDD or VSS and the core power pads PAD_G4/I1, PAD_I4/I1, PAD_G3/I1 and PAD_I3/I1.
+## Spacing problems near the power pads
 
-The selected VSS violation shows 0.500 µm actual spacing and 1.500 µm required spacing. The screenshot captures an intermediate state and does not demonstrate that the violations were subsequently resolved.
+This earlier DRC check found four M2 spacing violations near PAD_G4/I1, PAD_I4/I1, PAD_G3/I1 and PAD_I3/I1.
 
-![Spacing violations near power pads](../assets/results/drc_spacing.png)
+The selected problem has 0.500 µm spacing, while the rule requires 1.500 µm. This picture shows the problems at that stage. It does not show that they were fixed later.
 
-## Initial Virtuoso import form
+![Spacing problems near the power pads](../assets/results/drc_spacing.png)
 
-The saved form shows the input GDS and layer map settings. At the time of this capture the Library field still contains tsmcN65. The intended design destination is EDLib with tsmcN65 attached as its technology library.
+## Opening the layout in Virtuoso
 
-This image documents the initial form before that correction. It is not the completed import summary.
+This picture shows our first import settings. It was taken before we changed the Library field from tsmcN65 to EDLib.
 
-![Initial Virtuoso stream import form](../assets/results/virtuoso_import.png)
+EDLib holds our design. The tsmcN65 library provides the technology information. This picture shows the settings, rather than the finished import.
+
+![Our first Virtuoso import settings](../assets/results/virtuoso_import.png)
