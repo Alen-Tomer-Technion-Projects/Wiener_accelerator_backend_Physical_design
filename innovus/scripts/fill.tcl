@@ -1,4 +1,3 @@
-# Source: TSMC65Flow_1_7_25.pdf, printed page 46.
 addFiller -cell FILL64LVT -prefix FILLER -fillBoundary
 addFiller -cell FILL32LVT -prefix FILLER -fillBoundary
 addFiller -cell FILL16LVT -prefix FILLER -fillBoundary

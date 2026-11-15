@@ -1,4 +1,3 @@
-# Source: TSMC65Flow_1_7_25.pdf, printed pages 46-47.
 # Run after the required final checks; outputs are written in the working directory.
 update_names -nocase
 saveNetlist top_post_layout.v -topModuleFirst -flat

@@ -1,4 +1,3 @@
-# Source: TSMC65Flow_1_7_25.pdf, printed pages 41-42.
 # Adaptations are listed in README.md. Run from this mode's work directory.
 set corner "fast_15_OCV"
 set si_enable_analysis true

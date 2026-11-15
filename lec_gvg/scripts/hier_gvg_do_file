@@ -1,5 +1,3 @@
-// Source: TSMC65Flow_1_7_25.pdf, printed pages 47-48.
-// Adaptation: two scan chains; PDF line wrapping repaired.
 set log file ../logfile/out.log -replace
 set compare effort low
 

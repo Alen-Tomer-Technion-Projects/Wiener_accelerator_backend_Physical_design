@@ -1,4 +1,3 @@
-# Source: TSMC65Flow_1_7_25.pdf, printed pages 40.
 # Adaptations are listed in README.md. Run from this mode's work directory.
 set corner "slow_setup"
 set si_enable_analysis true

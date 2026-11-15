@@ -1,48 +1,61 @@
-# Wiener Accelerator - Backend Flow Examples
+# Wiener Image Filter Accelerator
 
 ![Wiener accelerator chip layout](assets/chip_layout.png)
 
-The code examples in this repository are reproduced in **TSMC65Flow_1_7_25.pdf**,
-with limited project adaptations and limitations. Page references below use the printed page numbers.
+Physical implementation of a Wiener image filter accelerator using Cadence Innovus, Cadence Conformal and Synopsys PrimeTime, with layout preparation in Cadence Virtuoso.
 
-The chip overview above is included with explicit publication approval. Project RTL, testbenches, netlists,
-other screenshots, results, private notes and source inventories are excluded.
-The PDF and licensed technology libraries are not distributed here.
+This repository contains selected implementation scripts and screenshots of the project results. The chip overview shows the routed core, its surrounding power network and the signal and supply pads around the perimeter.
 
-## Included examples
+## Logic equivalence
 
-| File | PDF pages | Scope / adaptation |
-|---|---|---|
-| [Gate-to-gate LEC](lec_gvg/scripts/hier_gvg_do_file) | 47-48 | Same comparison flow; third scan chain removed for a two-chain design. |
-| [Clock source](innovus/scripts/clock_tree_source.tcl) | 30 | I5 changed to I7. This is only the source declaration, not the full ccopt.tcl. |
-| [Post-route optimization](innovus/scripts/post_route_optimization.tcl) | 33 | Analysis mode and two optimization commands printed in the guide. |
-| [RC extraction](innovus/scripts/xt.tcl) | 33 | SlowRC and FastRC SPEF extraction commands. |
-| [Timing-netlist export](innovus/scripts/export_timing_netlist.tcl) | 40 | Export with power/ground removed for timing analysis. |
-| [Setup analysis](primetime/setup/scripts/run_pt_slow_setup.tcl) | 40 | Slow-library, maximum-delay analysis example. |
-| [Hold analysis](primetime/hold/scripts/run_pt_fast_hold.tcl) | 41-42 | Fast-library, minimum-delay analysis with the printed 15% derates. |
-| [Filler insertion](innovus/scripts/fill.tcl) | 46 | FILL64LVT through FILL1LVT commands. |
-| [Final export](innovus/scripts/export_final.tcl) | 46-47 | Case-name normalization, final Verilog and GDS export. |
+The captured gate to gate comparison completed with an **Equivalent** result. Conformal processed one module pair with zero nonequivalent pairs and zero aborted pairs. The recorded CPU time was 530.98 seconds.
 
-## Using the examples
+This result applies to the netlists and comparison setup used in the captured run.
 
-Use the guide's working-directory layout: scripts are sourced from the corresponding work directory,
-with sibling datain, dataout, report and logfile directories. Supply the netlists, SDC, SPEFs and libraries privately.
-These are selected examples, not a complete automated backend flow. They have not been executed in commercial EDA tools here.
+![Completed logic equivalence comparison](assets/results/logic_equivalence.png)
 
-- Conformal: launch `lec -ECOGXL` from lec_gvg/work, then use `dofile ../scripts/hier_gvg_do_file`.
-- PrimeTime: launch a fresh `pt_shell` from primetime/setup/work or primetime/hold/work and source its corresponding script.
-- Innovus: source each applicable example at the stage specified by the guide. The clock-source fragment does not perform CTS.
-- Prepare the two LEC netlist copies as directed on page 47; keep the physical implementation inputs separate.
-- Run the guide's DRC/connectivity checks after filler insertion. Export only the intended final design revision.
+## Clock distribution
 
-## Adaptations to the printed code
+Clock tree synthesis produced the distribution network shown below. The captured clock DAG check lists no net violations.
 
-PDF line wraps are repaired into valid Tcl command continuations. The LEC example uses two scan chains;
-the clock-source fragment uses I7/I1/C. PrimeTime examples use the explicit top name `top`, complete command/option names,
-`get_clocks` for the clock collection, and the plural application-variable spelling `read_parasitics_load_locations`.
-The library search paths are grouped as a Tcl list and `*` is included in the link search list.
-Corner labels identify setup/hold reports; the actual libraries and operating conditions determine PVT.
-No additional diagnostics, session-saving commands or implementation checkpoints have been added.
+The displayed SlowDC setup view has insertion delays from **0.274 ns to 0.362 ns**. Its clock skew is **0.088 ns**, against a target of **0.300 ns**. Average insertion delay is **0.335 ns**.
 
-Every implementation command in the retained examples derives from the PDF examples above; the adaptations are listed here.
-No license for third-party libraries or the manual is implied by their names appearing in these examples.
+The cell distribution lists **196 clock buffers** and **12 instances classified as dcg**.
+
+![Clock tree topology](assets/results/clock_tree.png)
+
+## Timing progress
+
+The earlier timing snapshot shows setup WNS of **negative 0.010 ns**, TNS of **negative 0.018 ns** and **three violating paths** in SlowView. The corresponding FastView hold snapshot shows WNS of **positive 0.047 ns**, zero TNS and zero violating paths.
+
+After routing and setup optimization, the displayed final setup summary shows **positive 0.479 ns WNS**, zero TNS and **85.77% density**.
+
+The separate hold optimization image records a completed run. Its visible timing fields are setup metrics, so they do not establish the final hold slack.
+
+![Setup optimization summary after routing](assets/results/postroute_setup_optimization.png)
+
+## Power estimate
+
+The captured power summary lists **0.24418 mW total leakage power**, **267.496 pF total capacitance** and **26,559 instances**. It also lists two instances without power values and two without activity values.
+
+These figures describe that captured estimate. The supplied images do not establish total dynamic power or supply voltage drop results.
+
+## Physical verification progress
+
+The supplied DRC snapshot shows **four M2 parallel run length spacing violations** near the core power pads. The selected violation has **0.500 µm actual spacing** against **1.500 µm required spacing**.
+
+This records an intermediate verification state. Final DRC and LVS closure remain to be documented.
+
+The Virtuoso screenshot records an initial stream import form. It shows the technology library in the destination field before that selection was corrected. The design destination is **EDLib**, attached to **tsmcN65**.
+
+The [results gallery](docs/results.md) contains all supplied screenshots and explains what each one demonstrates.
+
+## Scripts
+
+The [Conformal directory](lec_gvg/scripts) contains the gate to gate comparison setup for two scan chains and gated clock modeling.
+
+The [Innovus directory](innovus/scripts) contains clock source declaration, routing optimization, RC extraction, filler insertion and netlist and GDS export examples. The clock source fragment declares the source pin only and does not run a complete clock tree synthesis flow.
+
+The [PrimeTime setup directory](primetime/setup/scripts) and [PrimeTime hold directory](primetime/hold/scripts) contain the corresponding timing analysis examples.
+
+The tools require matching netlists, timing constraints, parasitics and licensed libraries supplied in the working environment. The included scripts are selected flow stages rather than a complete automated implementation.
