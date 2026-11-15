@@ -14,7 +14,7 @@ The picture above shows our chip after routing. The filter circuit is in the mid
 
 ## Logic equivalence check
 
-We used Conformal to compare the design before and after physical implementation. The result was **Equivalent**, with one module pair checked and no failed or aborted pairs.
+We used Conformal to compare the design before and after physical implementation. The result was **Equivalent** between the rtl and compile ultra with scan chains and clock gating, with one module pair checked and no failed or aborted pairs.
 
 This means the logic matched for the files and settings used in this check.
 
